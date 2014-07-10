@@ -15,7 +15,6 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
 ```javascript
 {
 	"middleware": {
-
          "yogFeature": {
             "enabled": true,
             "priority": 110,
@@ -23,7 +22,7 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
                 "name" : "yog-feature",
                 "arguments": [
                     {
-                        "config_file": "path:./config/features.json"
+                        "config_dir": "path:./config"
                     }
                 ]
             }
@@ -32,9 +31,11 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
 }
 ```
 
-其中 config_file表示feature配置文件地址，必填项。
+其中 config_dir表示feature配置文件夹地址，必填项。
 
 ### 2 配置所使用的feature
+
+各个模块的feature单独配置，命名规则`namespace-features.json`。如`common-features.json`。
 
 中间件默认提供三种feature：switch(是否开启控制)、date(日期范围控制)、percentage(比例抽样控制)，具体说明见下feature说明。配置格式如下：
 
@@ -65,7 +66,7 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
 配置好后就可以使用相应的feature来控制模板层的功能，如下所示：
 
 ```html
-{% feature "featureA" %}
+{% feature "common:featureA" %}
 	<h1>Feature Flag控制命中</h1>
     {% widget "example:widget/new.tpl" id="1" mode="async" %}
 {% featureelse %}
@@ -76,7 +77,7 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
 或者只使用一个feature标签
 
 ```
-{% feature "featureA" %}
+{% feature "common:featureA" %}
 	<h1>Feature Flag控制命中才看到这部分内容</h1>
     {% widget "example:widget/new.tpl" id="1" mode="async" %}
 {% endfeature %}
@@ -121,7 +122,7 @@ percentage控制抽样比例，0-1范围，1表示全部抽样。根据baiduid�
                 "name" : "yog-feature",
                 "arguments": [
                     {
-                        "config_file": "path:./config/features.json",
+                        "config_dir": "path:./config",
                         "feature_dir" : "path:./config/feature_extend" 
                     }
                 ]

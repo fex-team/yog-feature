@@ -15,20 +15,23 @@ var DoorKeeper = function(option,req,res){
     };
     this.option = option;
     this.features = {};//feature实例配置列表
-    this.init(option);
     this.logger = Logger.getLogger();
 }
 
+
 /**
- * 初始化用户feature配置与自定义扩展
- * @param  {[type]} option [description]
+ * 获取某个模块内的feature
+ * @param  {[type]} module [description]
  * @return {[type]}        [description]
  */
-DoorKeeper.prototype.init = function(option){
-    this.option = option;
-    var logger = this.logger;
-    if(option['config_file']){
-        var feature_json = option['config_file'];
+DoorKeeper.prototype.getModuleFeature = function(nameSpace) {
+    //已读取配置不重复读取
+    if(this.features[nameSpace]){
+        return false;
+    }
+    var option = this.option;
+    if(option['config_dir']){
+        var feature_json = option['config_dir'] + "/" + nameSpace + "-features.json";
         try {
             stat = fs.statSync(feature_json);
         }catch(e) {
@@ -37,7 +40,7 @@ DoorKeeper.prototype.init = function(option){
         if (stat && stat.isFile()) {
             try {             
                 var json = JSON.parse(fs.readFileSync(feature_json));
-                this.features = json['features'];
+                this.features[nameSpace] = json['features'];
             } catch (e) {
                 logger.log('fatal',{
                     'stack': e
@@ -45,24 +48,40 @@ DoorKeeper.prototype.init = function(option){
             }
         } 
     }
-}
+};
 
 /**
  * 给模板层调用接口，判断某个feature是否开启
  * @param  {[type]} name [description]
  * @return {[type]}      [description]
  */
-DoorKeeper.prototype.getFlag = function(name){
-    if(!this.features[name]){
+DoorKeeper.prototype.getFlag = function(str){
+    var logger = this.logger;
+    var _arr = str.split(":");  
+    if(_arr.length != 2){
+        logger.log('warning',{
+            'msg' : "wrong feature name " + str
+        });
+        return false;
+    }
+    var nameSpace = _arr[0], featureName = _arr[1];
+    //初始化该模块的feature配置
+    this.getModuleFeature(nameSpace);
+
+    //如果模块里不存在此feature配置，报错返回
+    if(!this.features[nameSpace] || !this.features[nameSpace][featureName]){
+        logger.log('warning',{
+            'msg' : "no conf for feature : " + featureName + " and module :" + nameSpace
+        });
         return false;
     }
     var req = this.params['req'],
-        res = this.params['res'],
-        value = this.features[name]['value'] || null,//feature阈值
+        res = this.params['res'],      
         feature_dir =  this.option['feature_dir'],
-        type  = this.features[name]['type']; //feature类型
+        conf = this.features[nameSpace][featureName],   
+        value = conf['value'] || null,//feature阈值
+        type  = conf['type']; //feature类型
 
-    var logger = this.logger;
     //默认的feature
     if(Features[type] &&  'function' == typeof(Features[type])){
         try{
@@ -71,6 +90,7 @@ DoorKeeper.prototype.getFlag = function(name){
             logger.log('fatal',{
                 'stack': e
             });
+            console.log(e);
             return false;
         } 
     }else if(feature_dir) {  //自定义扩展的feature
@@ -88,6 +108,11 @@ DoorKeeper.prototype.getFlag = function(name){
         }
         return false;
     }
+    //不存在feature类型
+    logger.log('warning',{
+        'msg': 'no feature type :' + type
+    });
+
     return false;   
 }
 
@@ -101,7 +126,7 @@ module.exports = function(config){
         //由于feature配置随时可能变化，request参数也不同，故每次请求进行一次初始化
         var dooKeeper = new DoorKeeper(config,req,res);
         //test
-        //console.log(dooKeeper.getFlag("featureB"));
+        //console.log(dooKeeper.getFlag("common:featureD"));
 
         //绑定在res对象的locals上的变量将直接传递到swig中
         //便于模板层编译时直接调用
