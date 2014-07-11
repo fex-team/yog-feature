@@ -30,12 +30,17 @@ DoorKeeper.prototype.getModuleFeature = function(nameSpace) {
         return false;
     }
     var option = this.option;
+    var logger = this.logger;
     if(option['config_dir']){
         var feature_json = option['config_dir'] + "/" + nameSpace + "-features.json";
         try {
             stat = fs.statSync(feature_json);
         }catch(e) {
-            logger.log('fatal',{'stack': e});
+            logger.log('fatal',{
+                'stack': e ,
+                'msg' : 'stat ' +  feature_json + ' error!'
+            });
+
         }
         if (stat && stat.isFile()) {
             try {             
@@ -43,7 +48,8 @@ DoorKeeper.prototype.getModuleFeature = function(nameSpace) {
                 this.features[nameSpace] = json['features'];
             } catch (e) {
                 logger.log('fatal',{
-                    'stack': e
+                    'stack': e,
+                    'msg' : 'parse json file '+ feature_json + " error! detail :" + e
                 });
             }
         } 
@@ -88,9 +94,9 @@ DoorKeeper.prototype.getFlag = function(str){
             return Features[type](value,req,res); 
         }catch(e){
             logger.log('fatal',{
-                'stack': e
+                'stack': e,
+                'msg' : 'exec feature type :' + type + ' and featureName ' + featureName + ' error! detail:' + e 
             });
-            console.log(e);
             return false;
         } 
     }else if(feature_dir) {  //自定义扩展的feature
@@ -101,7 +107,8 @@ DoorKeeper.prototype.getFlag = function(str){
                 return feature(value,req,res);
             }catch(e){
                 logger.log('fatal',{
-                    'stack': e
+                    'stack': e,
+                    'msg' : 'exec custom feature type ' + file + ' error! detail:' + e
                 });
                 return false;
             }
