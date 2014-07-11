@@ -39,7 +39,7 @@ DoorKeeper.prototype.getModuleFeature = function(nameSpace) {
         }catch(e) {
             logger.log('fatal',{
                 'stack': e ,
-                'msg' : 'stat ' +  feature_json + ' error!'
+                'msg' : 'get ' +  feature_json + ' error! detail:' + e
             });
 
         }
@@ -78,7 +78,7 @@ DoorKeeper.prototype.getFlag = function(str){
     //如果模块里不存在此feature配置，报错返回
     if(!this.features[nameSpace] || !this.features[nameSpace][featureName]){
         logger.log('warning',{
-            'msg' : "no conf for feature : " + featureName + " and module :" + nameSpace
+            'msg' : "no conf for feature: " + featureName + " and module: " + nameSpace
         });
         return false;
     }
@@ -89,6 +89,14 @@ DoorKeeper.prototype.getFlag = function(str){
         value = conf['value'] || null,//feature阈值
         type  = conf['type']; //feature类型
 
+    //如果没有设置feature type,报错返回
+    if(!conf.hasOwnProperty('type')){
+        logger.log('warning',{
+            'msg': 'feature type not set in ' + featureName
+        });
+        return false;
+    }
+
     //默认的feature
     if(Features[type] &&  'function' == typeof(Features[type])){
         try{
@@ -96,13 +104,13 @@ DoorKeeper.prototype.getFlag = function(str){
         }catch(e){
             logger.log('fatal',{
                 'stack': e,
-                'msg' : 'exec feature type :' + type + ' and featureName ' + featureName + ' error! detail:' + e 
+                'msg' : 'exec feature type:' + type + ' and featureName ' + featureName + ' error! detail: ' + e 
             });
             return false;
         } 
-    }else if(feature_dir) {  //自定义扩展的feature
+    }else{  //自定义扩展的feature
         var file = feature_dir + "/" + type + ".js";
-        if(fs.existsSync(file)){
+        if(feature_dir && fs.existsSync(file)){
             try{
                 var feature = require(file);
                 return feature(value,req,res);
@@ -113,15 +121,14 @@ DoorKeeper.prototype.getFlag = function(str){
                 });
                 return false;
             }
-        }
-        return false;
-    }
-    //不存在feature类型
-    logger.log('warning',{
-        'msg': 'no feature type :' + type
-    });
-
-    return false;   
+        }else{
+            //不存在feature类型
+            logger.log('warning',{
+                'msg': 'no feature type: ' + type
+            });
+            return false;
+        }      
+    } 
 }
 
 
