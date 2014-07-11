@@ -31,6 +31,7 @@ DoorKeeper.prototype.getModuleFeature = function(nameSpace) {
     }
     var option = this.option;
     var logger = this.logger;
+    var stat;
     if(option['config_dir']){
         var feature_json = option['config_dir'] + "/" + nameSpace + "-features.json";
         try {
