@@ -1,0 +1,34 @@
+{
+	"features" : {
+        "switch-on" : {
+            "type" : "switch",
+            "value" : "on",
+            "desc" : "test switch feature work or not"
+        },
+        "switch-off" : {
+            "type" : "switch",
+            "value" : "off",
+            "desc" : "test switch feature work or not"
+        },
+        "percentage-on" : {
+            "type" : "percentage",
+        	"value" : 0.9,
+        	"desc" : "test percentage work or not"
+        },
+        "percentage-off" : {
+            "type" : "percentage",
+            "value" : 0.2,
+            "desc" : "test percentage work or not"
+        },
+        "ip-on" : {
+            "type" : "ip",
+            "value" : ["127.0.0.1"],
+            "desc" : "test custom extend ip"
+        },
+        "ip-off" : {
+            "type" : "ip",
+            "value" : ["127.0.0.2"],
+            "desc" : "test custom extend ip"
+        }
+    }
+}

@@ -149,3 +149,6 @@ module.exports = function(config){
         next();
     }    
 };
+
+//for test
+module.exports.dooKeeper = DoorKeeper;
