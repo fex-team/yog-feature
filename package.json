@@ -15,13 +15,12 @@
   "keywords": [
     "fis",
     "yog",
-    "express",
-    "kraken-js"
+    "express"
   ],
-  "author": "fansekey",
+  "author": "zhangtao07",
   "license": "BSD",
   "bugs": {
-    "url": "https://github.com/fex-team/yog-log/issues"
+    "url": "https://github.com/fex-team/yog-feature/issues"
   },
-  "homepage": "https://github.com/fex-team/yog-log"
+  "homepage": "https://github.com/fex-team/yog-feature"
 }
