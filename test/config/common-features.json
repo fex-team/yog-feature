@@ -12,12 +12,16 @@
         },
         "percentage-on" : {
             "type" : "percentage",
-        	"value" : 0.9,
+        	"value" :1,
         	"desc" : "test percentage work or not"
         },
         "percentage-off" : {
             "type" : "percentage",
-            "value" : 0.2,
+            "value" : 0,
+            "desc" : "test percentage work or not"
+        },
+        "percentage-null" : {
+            "type" : "percentage",
             "desc" : "test percentage work or not"
         },
         "ip-on" : {
@@ -29,6 +33,9 @@
             "type" : "ip",
             "value" : ["127.0.0.2"],
             "desc" : "test custom extend ip"
+        },
+        "type-null" : {
+            "desc" : "test type"
         }
     }
 }

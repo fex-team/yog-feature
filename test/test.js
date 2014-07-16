@@ -1,4 +1,5 @@
-var dk  =  require("../index.js");
+﻿var dk  =  require("../index.js");
+var Features = require("../lib/features.js");
 var assert = require("assert");
 var config = {
 	 "config_dir": __dirname +  "/config",
@@ -34,11 +35,11 @@ Date.prototype.Format = function (fmt) {
 //测试switch开关是否正常
 describe('Feature switch', function(){
 
-    it('should return true when value is on', function(){    
+    it('should return true when value is on', function(){
          assert.equal(true, dooKeeper.getFlag('common:switch-on'));
     })
 
-    it('should return true when value is off', function(){    
+    it('should return true when value is off', function(){
          assert.equal(false, dooKeeper.getFlag('common:switch-off'));
     })
 
@@ -97,30 +98,40 @@ describe('Feature date', function(){
         "desc" : "test date work or not"
 	};
 
+    //配置为空
+    dooKeeper['features']['date']['date-7']  = {
+        "type" : "date",
+        "desc" : "test date work or not"
+    };
 
     it('date-1', function(){    
          assert.equal(true, dooKeeper.getFlag('date:date-1'));
     })
 
-    it('date-2', function(){    
+    it('date-2', function(){
          assert.equal(true, dooKeeper.getFlag('date:date-2'));
     })
 
-    it('date-3', function(){    
+    it('date-3', function(){
          assert.equal(false, dooKeeper.getFlag('date:date-3'));
     })
 
-    it('date-4', function(){    
+    it('date-4', function(){
          assert.equal(false, dooKeeper.getFlag('date:date-4'));
     })
 
-    it('date-5', function(){    
+    it('date-5', function(){
          assert.equal(true, dooKeeper.getFlag('date:date-5'));
     })
 
-    it('date-6', function(){    
+    it('date-6', function(){
          assert.equal(false, dooKeeper.getFlag('date:date-6'));
     })
+
+    it('null',function(){
+        assert.equal(false,dooKeeper.getFlag('date:date-7'));
+    })
+
 })
 
 
@@ -131,10 +142,24 @@ describe('Feature percentage', function(){
          assert.equal(true, dooKeeper.getFlag('common:percentage-on'));
     })
 
-    it('should return true when random is bigger', function(){    
+    it('should return false when random is bigger', function(){
          assert.equal(false, dooKeeper.getFlag('common:percentage-off'));
     })
 
+    it('should return false when random is null', function(){
+        assert.equal(false, dooKeeper.getFlag('common:percentage-null'));
+    })
+
+    it('no cookie',function(){
+        var req = {
+            'headers' : {
+                'x-forwarded-for' : '127.0.0.1'
+            }
+        };
+        var res = {};
+        var dooKeeper = new dk.dooKeeper(config,req,res);
+        assert.equal(true,dooKeeper.getFlag('common:percentage-on'));
+    })
 })
 
 
@@ -153,6 +178,14 @@ describe('custom Feature IP', function(){
 
 //测试配置
 describe('config', function(){
+
+    it('feature should be function ',function(){
+        Features();
+    })
+
+    it('type is null',function(){
+        assert.equal(false,dooKeeper.getFlag('common:type-null'));
+    })
 
     it('no type', function(){    
          assert.equal(false, dooKeeper.getFlag('common:test'));
@@ -175,6 +208,8 @@ describe('config', function(){
 	it('no dir', function(){    
          assert.equal(false, dooKeeper2.getFlag('common:switch-on'));
     })
-
+    it('use exports function of index.js',function(){
+        var fn = dk(config);
+    })
 })
 
