@@ -168,4 +168,4 @@ module.exports = function(val,req,res){
 任何需求或者问题欢迎联系！
 
 邮件组 ： oak@baidu.com
-HI ： zhangtao07@baidu.com、wangcheng@biadu.com
+HI ： zhangtao07@baidu.com、wangcheng@baidu.com
