@@ -1,4 +1,4 @@
-yog-feature  
+yog-feature
 ===========
 
 ## 这是什么
@@ -56,7 +56,7 @@ yog-feature不支持单独使用，集成在yog框架中，与yog-swig模板结�
         	"type" : "percentage",
         	"value" : 0.2,
         	"desc" : "test percentage work or not"
-        }  
+        }
     }
 }
 ```
@@ -123,7 +123,7 @@ percentage控制抽样比例，0-1范围，1表示全部抽样。根据baiduid�
                 "arguments": [
                     {
                         "config_dir": "path:./config",
-                        "feature_dir" : "path:./config/feature_extend" 
+                        "feature_dir" : "path:./config/feature_extend"
                     }
                 ]
             }
@@ -161,11 +161,3 @@ module.exports = function(val,req,res){
 ```
 
 这样就轻松实现了扩展，使得线上的功能只对限定IP的人可见，可以实现线上调试。
-
-
-## 联系我们
-
-任何需求或者问题欢迎联系！
-
-邮件组 ： oak@baidu.com
-HI ： zhangtao07@baidu.com、wangcheng@baidu.com
